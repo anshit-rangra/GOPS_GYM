@@ -3,6 +3,7 @@ import authRouter from '../routes/auth.routes.js'
 import cookieParser from 'cookie-parser'
 import { authAdminMiddleware } from '../middlewares/auth.middleware.js'
 import adminRouter from '../routes/admin.routes.js'
+import attendanceRouter from '../routes/attendance.routes.js'
 
 const app = express()
 
@@ -16,6 +17,7 @@ app.get("/", (req, res) => {
 
 app.use("/api/auth", authRouter)
 app.use("/api/admin", authAdminMiddleware, adminRouter)
+app.use("/api/attendance", attendanceRouter)
 
 
 
