@@ -143,10 +143,32 @@ async function getUser(req, res){
     }
 }
 
+async function deleteUserAccount(req, res){
+    const { userId } = req.params;
+
+    if (!mongoose.Types.ObjectId.isValid(userId)) {
+            return res.status(400).json({
+                message: "Invalid user ID"
+        });
+}
+
+    const user = await userModel.findOne({ _id:userId })
+
+    if(!user) return res.status(200).json({message:"User Already deleted"})
+
+    await deleteFile(user.profilePic.picId)
+    
+    await userModel.findOneAndDelete({ _id: userId })
+
+    res.status(200).json({ message:"User Delete Sucessfully" })
+
+}
+
 export default {
     getAuthorizedUsers,
     getUnauthorizedUsers,
     authorizeUser,
     unauthorizeUser,
+    deleteUserAccount,
     getUser
 }

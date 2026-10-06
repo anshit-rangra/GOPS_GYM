@@ -34,6 +34,12 @@ adminRouter.post("/unauthorize/user/:userId", adminController.unauthorizeUser)
 
 adminRouter.get("/get/user", adminController.getUser)
 
+/**
+ *  @GET /api/admin/delete/user/:userId
+ */
+
+adminRouter.delete("/delete/user/:userId", adminController.deleteUserAccount)
+
 
 
 export default adminRouter

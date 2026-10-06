@@ -37,10 +37,5 @@ authRouter.get("/me", authUserMiddleware, authController.getMe)
 
 authRouter.get("/refresh", authController.getAccessToken)
 
-/**
- *  @DELETE Delete Account /api/auth/delete/account
- */
-
-authRouter.delete("/delete/account", authUserMiddleware, authController.deleteMyAccount)
 
 export default authRouter;

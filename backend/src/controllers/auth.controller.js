@@ -134,25 +134,11 @@ async function getMe(req, res){
 
 }
 
-async function deleteMyAccount(req, res){
-    const { userId } = req.user;
 
-    const user = await userModel.findOne({ _id:userId })
-
-    if(!user) return res.status(200).json({message:"User Already deleted"})
-
-    await deleteFile(user.profilePic.picId)
-    
-    await userModel.findOneAndDelete({ _id: userId })
-
-    res.status(200).json({ message:"User Delete Sucessfully" })
-
-}
 
 export default {
     registerUser,
     loginUser,
     getMe,
     getAccessToken,
-    deleteMyAccount
 }
