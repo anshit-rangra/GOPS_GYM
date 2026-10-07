@@ -1,64 +1,14 @@
-import { useState } from 'react';
 import { Link } from 'react-router';
 import Card from '../../../../../components/ui/Card';
 import Button from '../../../../../components/ui/Button';
 import AuthFormHeader from './AuthFormHeader';
 import FormField from './FormField';
+import { useLogin } from '../../../hooks/useLogin';
 
 const LoginForm = () => {
-  const [formData, setFormData] = useState({
-    phoneNumber: '',
-    password: ''
-  });
-  const [errors, setErrors] = useState({});
-  const [isLoading, setIsLoading] = useState(false);
 
-  const handleChange = (e) => {
-    const { name, value } = e.target;
-    setFormData(prev => ({
-      ...prev,
-      [name]: value
-    }));
-    if (errors[name]) {
-      setErrors(prev => ({
-        ...prev,
-        [name]: ''
-      }));
-    }
-  };
+  const { onSubmit, register, isSubmitting, errors, handleSubmit } = useLogin()
 
-  const validateForm = () => {
-    const newErrors = {};
-    
-    if (!formData.phoneNumber.trim()) {
-      newErrors.phoneNumber = 'Phone number is required';
-    }
-    
-    if (!formData.password) {
-      newErrors.password = 'Password is required';
-    }
-    
-    setErrors(newErrors);
-    return Object.keys(newErrors).length === 0;
-  };
-
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-    
-    if (!validateForm()) {
-      return;
-    }
-    
-    setIsLoading(true);
-    try {
-      console.log('Login data:', formData);
-      await new Promise(resolve => setTimeout(resolve, 1000));
-    } catch (error) {
-      console.error('Login error:', error);
-    } finally {
-      setIsLoading(false);
-    }
-  };
 
   return (
     <Card 
@@ -71,16 +21,15 @@ const LoginForm = () => {
         subtitle="Sign in to continue your fitness journey"
       />
       
-      <form onSubmit={handleSubmit} className="space-y-6" noValidate>
+      <form onSubmit={handleSubmit(onSubmit)} className="space-y-6" noValidate>
         <FormField
           label="Phone Number"
           type="tel"
           id="phoneNumber"
           name="phoneNumber"
-          value={formData.phoneNumber}
-          onChange={handleChange}
+          {...register('phoneNumber', { required: 'Phone number is required' })}
           placeholder="Enter your phone number"
-          error={errors.phoneNumber}
+          error={errors.phoneNumber?.message}
           required
         />
         
@@ -89,10 +38,9 @@ const LoginForm = () => {
           type="password"
           id="password"
           name="password"
-          value={formData.password}
-          onChange={handleChange}
+          {...register('password', { required: 'Password is required' })}
           placeholder="Enter your password"
-          error={errors.password}
+          error={errors.password?.message}
           required
         />
         
@@ -110,11 +58,11 @@ const LoginForm = () => {
           variant="primary"
           size="large"
           fullWidth
-          loading={isLoading}
-          disabled={isLoading}
+          loading={isSubmitting}
+          disabled={isSubmitting}
           className="mt-8 hover:shadow-lg transform transition-all duration-200"
         >
-          {isLoading ? 'Signing in...' : 'Sign In'}
+          {isSubmitting ? 'Signing in...' : 'Sign In'}
         </Button>
         
         <div className="text-center pt-4">

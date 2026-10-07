@@ -21,15 +21,32 @@ const authSlice = createSlice({
             state.error = null 
         },
 
-        registrationSuccess: (state, action) => {
+        loginStart: (state) => {
+            state.loading = true;
+            state.error = null
+        },
+
+        registrationSuccess: (state) => {
             state.loading = false
             state.error = null
+        },
+
+        loginSuccess: (state, action) => {
+            state.loading = false;
+            state.error = null
+            state.isAuthanticated = true 
+            state.user = action.payload.user
+            state.accessToken = action.payload.accessToken
         },
 
         registrationFailure: (state, action) => {
             state.loading = false;
             state.error = action.payload
+        },
 
+        loginFailure: (state, action) => {
+            state.loading = false;
+            state.error = action.payload
         },
 
 
@@ -51,8 +68,11 @@ const authSlice = createSlice({
 
 export const {
     registrationStart,
+    loginStart,
     registrationSuccess,
+    loginSuccess,
     registrationFailure,
+    loginFailure,
     logout,
     clearAuthError
     

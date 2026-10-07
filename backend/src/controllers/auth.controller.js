@@ -57,6 +57,7 @@ async function registerUser(req, res) {
 async function loginUser(req, res){
 
     const { phoneNumber, password } = req.body;
+    
 
     const userExists = await userModel.findOne({ phoneNumber })
 
