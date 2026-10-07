@@ -1,17 +1,15 @@
 import { Link } from 'react-router';
-import { Controller } from 'react-hook-form';
 import Card from '../../../../../components/ui/Card';
 import Button from '../../../../../components/ui/Button';
 import AuthFormHeader from './AuthFormHeader';
 import FormField from './FormField';
-import TermsCheckbox from './TermsCheckbox';
 import { useRegistration } from '../../../hooks/useRegistration';
 
 const RegisterForm = () => {
 
   const {
     onSubmit,
-    control, register, handleSubmit,  errors, isSubmitting,
+    register, handleSubmit,  errors, isSubmitting,
     profilePicPreview,
      
   } = useRegistration()
@@ -26,7 +24,7 @@ const RegisterForm = () => {
       <div className="mb-6 flex flex-col items-center">
         <label
           htmlFor="profilePic"
-          className="relative flex h-28 w-28 cursor-pointer items-center justify-center overflow-hidden rounded-full border-2 border-dashed border-[var(--color-primary)] text-center text-sm text-[var(--color-text-secondary)]"
+          className="relative flex h-28 w-28 cursor-pointer items-center justify-center overflow-hidden rounded-full border-2 border-dashed border-primary text-center text-sm text-text-secondary"
         >
           {profilePicPreview ? (
             <img
@@ -45,7 +43,7 @@ const RegisterForm = () => {
             {...register('profilePic')}
           />
         </label>
-        <span className="mt-2 text-sm text-[var(--color-text-secondary)]">
+        <span className="mt-2 text-sm text-text-secondary">
           Profile Photo
         </span>
       </div>
@@ -113,19 +111,6 @@ const RegisterForm = () => {
           required
         />
         
-        <Controller
-          name="terms"
-          control={control}
-          rules={{ required: 'You must agree to the terms and conditions' }}
-          render={({ field }) => (
-            <TermsCheckbox
-              checked={field.value}
-              onChange={field.onChange}
-              error={errors.terms?.message}
-            />
-          )}
-        />
-        
         <Button
           type="submit"
           variant="primary"
@@ -139,11 +124,11 @@ const RegisterForm = () => {
         </Button>
         
         <div className="text-center pt-2">
-          <p className="text-[var(--color-text-secondary)] text-sm">
+          <p className="text-text-secondary text-sm">
             Already have an account?{' '}
             <Link 
               to="/auth/login" 
-              className="text-[var(--color-primary)] font-medium hover:text-[var(--color-primary-dark)] transition-colors duration-200"
+              className="text-primary font-medium hover:text-primary-dark transition-colors duration-200"
             >
               Sign in
             </Link>

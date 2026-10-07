@@ -40,7 +40,7 @@ async function registerUser(req, res) {
     const userExist = await userModel.findOne({ phoneNumber })
 
     if(userExist) return res.status(409).json({message: "User already exists"})
-
+        
     const hashedPassword = await bcrypt.hash(password, 10)
 
     const uploadedFile = await uploadFile({ buffer: req.file.buffer, fileName:req.file.originalname})

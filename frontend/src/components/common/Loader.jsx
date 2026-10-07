@@ -61,12 +61,12 @@ const Loader = ({
     <div
       role="status"
       aria-label={label || 'Loading'}
-      className={`flex flex-col items-center justify-center gap-3 text-[var(--color-primary)] ${className}`}
+      className={`flex flex-col items-center justify-center gap-3 text-primary ${className}`}
       {...props}
     >
       {spinners[variant] || spinners.spinner}
       {label && (
-        <span className="text-sm text-[var(--color-text-secondary)]">
+        <span className="text-sm text-text-secondary">
           {label}
         </span>
       )}
@@ -75,7 +75,7 @@ const Loader = ({
 
   if (fullscreen) {
     return (
-      <div className="fixed inset-0 z-50 flex items-center justify-center bg-[var(--color-bg-primary)]/80 backdrop-blur-sm">
+      <div className="fixed inset-0 z-50 flex items-center justify-center bg-bg-primary/80 backdrop-blur-sm">
         {content}
       </div>
     );

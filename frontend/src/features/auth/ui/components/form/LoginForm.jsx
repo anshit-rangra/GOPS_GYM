@@ -99,7 +99,7 @@ const LoginForm = () => {
         <div className="flex items-center justify-end">
           <Link 
             to="/auth/forgot-password" 
-            className="text-sm text-[var(--color-primary)] font-medium hover:text-[var(--color-primary-dark)] transition-colors duration-200"
+            className="text-sm text-primary font-medium hover:text-primary-dark transition-colors duration-200"
           >
             Forgot password?
           </Link>
@@ -118,11 +118,11 @@ const LoginForm = () => {
         </Button>
         
         <div className="text-center pt-4">
-          <p className="text-[var(--color-text-secondary)] text-sm">
+          <p className="text-text-secondary text-sm">
             Don&apos;t have an account?{' '}
             <Link 
               to="/auth/register" 
-              className="text-[var(--color-primary)] font-medium hover:text-[var(--color-primary-dark)] transition-colors duration-200"
+              className="text-primary font-medium hover:text-primary-dark transition-colors duration-200"
             >
               Create account
             </Link>

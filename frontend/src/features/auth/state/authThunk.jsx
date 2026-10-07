@@ -1,4 +1,4 @@
-import { showSuccess } from "../../../lib/toast/toast"
+import { showError, showSuccess } from "../../../lib/toast/toast"
 import { registerUser } from "../api/authApi"
 import {  registrationStart, registrationFailure, registrationSuccess } from "./authSlice"
 
@@ -17,7 +17,7 @@ export const registerThunk  = (credentials) => async (dispatch) => {
 
         
     } catch (error) {
-        console.log("Error in register --> ", error)
+        showError(error.response?.data?.message)
         dispatch(
             registrationFailure(
                 error.response?.data?.message || "Registration Failed"

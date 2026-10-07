@@ -22,8 +22,7 @@ export const useRegistration = () => {
       phoneNumber: '',
       age: '',
       password: '',
-      profilePic: null,
-      terms: false
+      profilePic: null
     }
   });
 
@@ -44,7 +43,7 @@ export const useRegistration = () => {
     return () => URL.revokeObjectURL(previewUrl);
   }, [profilePic]);
 
-  const onSubmit = async ({ terms, ...submitData }) => {
+  const onSubmit = async (submitData) => {
     try {
 
       const formData = new FormData()
