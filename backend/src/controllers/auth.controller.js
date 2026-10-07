@@ -32,7 +32,7 @@ File from ImageKit -->
 */
 
 async function registerUser(req, res) {
-
+    
     const { name, age, phoneNumber, password } = req.body
 
     if(!req.file) return res.status(404).json({ message: "Profile Photo not found" })
