@@ -1,6 +1,8 @@
 @import 'tailwindcss';
 
 @theme {
+  --font-sans: 'Inter', ui-sans-serif, system-ui, -apple-system, 'Segoe UI',
+    sans-serif;
   --color-primary: #3b82f6;
   --color-primary-light: #60a5fa;
   --color-primary-dark: #2563eb;
@@ -21,6 +23,50 @@
   --shadow-xl: 0 20px 25px -5px rgb(0 0 0 / 0.1), 0 8px 10px -6px rgb(0 0 0 / 0.1);
 }
 
+/*
+ * Dashboard palette is themeable: utilities reference runtime CSS variables so
+ * toggling `.theme-light` / `.theme-dark` swaps the whole surface instantly.
+ */
+@theme inline {
+  --color-night: var(--app-night);
+  --color-night-soft: var(--app-night-soft);
+  --color-panel: var(--app-panel);
+  --color-panel-2: var(--app-panel-2);
+  --color-line: var(--app-line);
+  --color-ink: var(--app-ink);
+  --color-muted: var(--app-muted);
+  --color-volt: var(--app-volt);
+  --color-volt-strong: var(--app-volt-strong);
+  --color-on-volt: var(--app-on-volt);
+}
+
+:root,
+.theme-dark {
+  --app-night: #0b0d0c;
+  --app-night-soft: #0f1210;
+  --app-panel: #141715;
+  --app-panel-2: #1b201d;
+  --app-line: #292f2b;
+  --app-ink: #f5f7f5;
+  --app-muted: #9ca69e;
+  --app-volt: #39d353;
+  --app-volt-strong: #2fbf4a;
+  --app-on-volt: #08130b;
+}
+
+.theme-light {
+  --app-night: #f4f7f5;
+  --app-night-soft: #eef2ef;
+  --app-panel: #ffffff;
+  --app-panel-2: #f1f4f2;
+  --app-line: #e1e7e3;
+  --app-ink: #0e1512;
+  --app-muted: #5a655e;
+  --app-volt: #15803d;
+  --app-volt-strong: #166534;
+  --app-on-volt: #ffffff;
+}
+
 :root {
   --color-primary: #3b82f6;
   --color-primary-light: #60a5fa;
@@ -35,8 +81,8 @@
 body {
   background-color: var(--color-bg-secondary);
   color: var(--color-text-primary);
-  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
-    'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto',
+    'Oxygen', 'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
     sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
@@ -66,4 +112,77 @@ select:focus {
 ::-webkit-scrollbar-thumb {
   background: rgb(25, 25, 25);
   border-radius: 10px;
+}
+
+/* Themeable dashboard scope */
+.app-shell {
+  color-scheme: dark;
+}
+
+.app-shell.theme-light {
+  color-scheme: light;
+}
+
+.app-shell ::-webkit-scrollbar-track {
+  background: var(--app-panel-2);
+}
+
+.app-shell ::-webkit-scrollbar-thumb {
+  background: color-mix(in srgb, var(--app-muted) 45%, transparent);
+}
+
+.app-shell ::-webkit-scrollbar-thumb:hover {
+  background: color-mix(in srgb, var(--app-muted) 65%, transparent);
+}
+
+.app-shell button:focus-visible,
+.app-shell a:focus-visible,
+.app-shell input:focus-visible,
+.app-shell [tabindex]:focus-visible {
+  outline: 2px solid var(--app-volt);
+  outline-offset: 2px;
+}
+
+@keyframes scan-sweep {
+  0% {
+    transform: translateY(-70px);
+    opacity: 0.15;
+  }
+  50% {
+    opacity: 1;
+  }
+  100% {
+    transform: translateY(70px);
+    opacity: 0.15;
+  }
+}
+
+.animate-scan-sweep {
+  animation: scan-sweep 2s ease-in-out infinite alternate;
+}
+
+@keyframes scan-ring {
+  0% {
+    transform: scale(0.9);
+    opacity: 0.5;
+  }
+  100% {
+    transform: scale(1.4);
+    opacity: 0;
+  }
+}
+
+.animate-scan-ring {
+  animation: scan-ring 1.8s ease-out infinite;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
 }

@@ -53,6 +53,18 @@ const Button = ({
       bg-[var(--color-success)] text-white
       hover:bg-emerald-600
       focus:ring-[var(--color-success)]/30
+    `,
+    accent: `
+      bg-volt text-on-volt font-semibold
+      hover:bg-volt-strong
+      focus:ring-volt/40 focus:ring-offset-panel
+      shadow-sm hover:shadow-md
+    `,
+    night: `
+      bg-panel-2 text-ink
+      border border-line
+      hover:border-volt/40 hover:text-volt
+      focus:ring-volt/30 focus:ring-offset-panel
     `
   };
 

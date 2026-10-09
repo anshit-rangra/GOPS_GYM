@@ -2,6 +2,7 @@ import { createBrowserRouter } from "react-router";
 import authRoutes from "./authRoutes";
 import AuthLayout from "../layouts/AuthLayout";
 import MainLayout from "../layouts/MainLayout";
+import DashboardLayout from "../layouts/DashboardLayout";
 import userRoutes from "./protected/userRoutes";
 import adminRoutes from "./protected/adminRoutes";
 import Home from "../features/home/ui/pages/Home"
@@ -21,10 +22,15 @@ const router = createBrowserRouter([
     },
     { // private { authorized } routes
         path: "/dashboard",
-        element: <MainLayout />,
         children: [
-            ...userRoutes,
-            ...adminRoutes
+            { // member dashboard shell
+                element: <DashboardLayout />,
+                children: userRoutes
+            },
+            { // admin dashboard shell
+                element: <MainLayout />,
+                children: adminRoutes
+            }
         ]
     }
 
