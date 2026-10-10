@@ -1,9 +1,9 @@
 import { useState } from "react";
-import { FiInfo, FiMaximize } from "react-icons/fi";
+import { FiCheckCircle, FiInfo, FiMaximize } from "react-icons/fi";
 import { Button, Card } from "../../../../../components/ui";
-import QRScannerModal from "../attendance/QRScannerModal";
+import QRScannerModal from "../attendance/LazyQRScannerModal";
 
-const QRCodeCheckIn = () => {
+const QRCodeCheckIn = ({ hasCheckedInToday = false, onCheckedIn }) => {
   const [scannerOpen, setScannerOpen] = useState(false);
 
   return (
@@ -22,7 +22,7 @@ const QRCodeCheckIn = () => {
           <div>
             <span className="inline-flex items-center gap-2 rounded-full bg-volt/12 px-3 py-1 text-[11px] font-semibold uppercase tracking-wider text-volt">
               <FiMaximize className="h-3.5 w-3.5" aria-hidden="true" />
-              Step 1 · Gym check-in
+              Gym check-in
             </span>
             <h2 className="mt-3 text-xl font-bold text-ink sm:text-2xl">
               Scan the QR code to mark your attendance
@@ -37,10 +37,17 @@ const QRCodeCheckIn = () => {
                 <FiMaximize className="h-4 w-4" aria-hidden="true" />
                 Scan QR Code
               </Button>
-              <span className="flex items-center gap-1.5 text-xs text-muted">
-                <FiInfo className="h-3.5 w-3.5" aria-hidden="true" />
-                UI demo — no real check-in is recorded.
-              </span>
+              {hasCheckedInToday ? (
+                <span className="flex items-center gap-1.5 text-xs font-medium text-volt">
+                  <FiCheckCircle className="h-3.5 w-3.5" aria-hidden="true" />
+                  You&apos;ve already checked in today
+                </span>
+              ) : (
+                <span className="flex items-center gap-1.5 text-xs text-muted">
+                  <FiInfo className="h-3.5 w-3.5" aria-hidden="true" />
+                  Your visit is verified by the gym server.
+                </span>
+              )}
             </div>
           </div>
 
@@ -77,6 +84,7 @@ const QRCodeCheckIn = () => {
       <QRScannerModal
         open={scannerOpen}
         onClose={() => setScannerOpen(false)}
+        onCheckedIn={onCheckedIn}
       />
     </>
   );

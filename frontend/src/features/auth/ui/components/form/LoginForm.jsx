@@ -7,14 +7,13 @@ import { useLogin } from '../../../hooks/useLogin';
 
 const LoginForm = () => {
 
-  const { onSubmit, register, isSubmitting, errors, handleSubmit } = useLogin()
-
+  const { onSubmit, register, loading, errors, handleSubmit } = useLogin()
 
   return (
     <Card 
-      variant="default" 
+      variant="panel" 
       padding="large" 
-      className="w-full max-w-md mx-auto backdrop-blur-sm"
+      className="w-full max-w-md mx-auto"
     >
       <AuthFormHeader 
         title="Welcome Back"
@@ -27,7 +26,13 @@ const LoginForm = () => {
           type="tel"
           id="phoneNumber"
           name="phoneNumber"
-          {...register('phoneNumber', { required: 'Phone number is required' })}
+          {...register('phoneNumber', {
+            required: 'Phone number is required',
+            pattern: {
+              value: /^[6-9]\d{9}$/,
+              message: 'Enter a valid 10-digit Indian mobile number',
+            },
+          })}
           placeholder="Enter your phone number"
           error={errors.phoneNumber?.message}
           required
@@ -44,33 +49,23 @@ const LoginForm = () => {
           required
         />
         
-        <div className="flex items-center justify-end">
-          <Link 
-            to="/auth/forgot-password" 
-            className="text-sm text-primary font-medium hover:text-primary-dark transition-colors duration-200"
-          >
-            Forgot password?
-          </Link>
-        </div>
-        
         <Button
           type="submit"
-          variant="primary"
+          variant="accent"
           size="large"
           fullWidth
-          loading={isSubmitting}
-          disabled={isSubmitting}
-          className="mt-8 hover:shadow-lg transform transition-all duration-200"
+          loading={loading}
+          disabled={loading}
         >
-          {isSubmitting ? 'Signing in...' : 'Sign In'}
+          {loading ? 'Signing in...' : 'Sign In'}
         </Button>
         
-        <div className="text-center pt-4">
-          <p className="text-text-secondary text-sm">
+        <div className="text-center">
+          <p className="text-muted text-sm">
             Don&apos;t have an account?{' '}
             <Link 
               to="/auth/register" 
-              className="text-primary font-medium hover:text-primary-dark transition-colors duration-200"
+              className="text-volt font-medium hover:text-volt-strong transition-colors duration-200"
             >
               Create account
             </Link>

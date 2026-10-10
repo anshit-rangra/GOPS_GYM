@@ -1,3 +1,4 @@
+import mongoose from "mongoose"
 import ENV from "../config/config.js"
 import attendanceModel from "../models/attendance.model.js"
 
@@ -24,7 +25,7 @@ async function getMyAttendance(req, res) {
 }
 
 async function getUserAttendance(req, res){
-    const userId = req.params.userId;
+    const userId = req.params.userID;
 
      if (!mongoose.Types.ObjectId.isValid(userId)) {
                 return res.status(400).json({

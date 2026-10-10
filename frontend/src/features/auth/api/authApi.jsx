@@ -1,37 +1,21 @@
 import api from "../../../lib/api/axios";
 
-export const registerUser = async (credentials) => {
-
-    
-  try {
-    const response = await api.post("/auth/register", credentials, {
-      headers: {
-        "Content-Type": "multipart/formData",
-      },
-    });
-
-
-    return response.data;
-  } catch (error) {
-    
-    throw error;
-  }
+export const registerUser = async (formData) => {
+  const { data } = await api.post("/auth/register", formData);
+  return data;
 };
 
-
 export const loginUser = async (credentials) => {
-  try {
+  const { data } = await api.post("/auth/login", credentials);
+  return data;
+};
 
-    const response = await api.post("/auth/login", credentials, {
-      headers: {
-        "Content-Type":"application/json"
-      }
-    })
-    
-    return response.data;
-    
-  } catch (error) {
-    
-    throw error;
-  }
-}
+export const fetchCurrentUser = async () => {
+  const { data } = await api.get("/auth/me");
+  return data;
+};
+
+export const requestAccessToken = async () => {
+  const { data } = await api.get("/auth/refresh");
+  return data;
+};

@@ -8,16 +8,16 @@ const CheckInSuccess = ({ checkInTime, onClose }) => (
     </span>
 
     <h3 className="mt-4 text-lg font-semibold text-ink">
-      Check-in Demo Complete
+      Check-in successful
     </h3>
-    <p className="mt-1 text-sm text-muted">Mock check-in time</p>
+    <p className="mt-1 text-sm text-muted">Attendance recorded at</p>
     <p className="mt-0.5 text-2xl font-bold text-volt">{checkInTime}</p>
 
     <div className="mt-4 flex items-start gap-2 rounded-xl border border-line bg-panel-2 p-3 text-left">
       <FiInfo className="mt-0.5 h-4 w-4 shrink-0 text-muted" aria-hidden="true" />
       <p className="text-xs text-muted">
-        This is a UI demonstration only — no real attendance was recorded and no
-        gym systems were contacted.
+        Your visit has been saved to your attendance history. If you train again
+        today, scan the code once more to log another session.
       </p>
     </div>
 

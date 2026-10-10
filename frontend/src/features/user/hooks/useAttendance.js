@@ -1,43 +1,57 @@
-import { useMemo } from "react";
-import { attendanceByDate, attendanceRecords } from "../data/mockAttendance";
-import {
-  buildHeatmapGrid,
-  buildWeeklySummary,
-  computeStatistics,
-  countWorkouts,
-  getRecentVisits,
-  startOfDay,
-} from "../utils/attendanceUtils";
-
-const HEATMAP_DAYS = 60;
+import { useCallback, useEffect, useMemo, useState } from "react";
+import { getApiErrorMessage } from "../../../lib/api/errors";
+import { fetchMyAttendance } from "../api/attendanceApi";
+import { buildAttendanceModel, toISODate } from "../utils/attendanceUtils";
 
 const useAttendance = () => {
-  const today = useMemo(() => startOfDay(new Date()), []);
+  const [rawRecords, setRawRecords] = useState([]);
+  const [status, setStatus] = useState("loading");
+  const [error, setError] = useState(null);
+  const [reloadKey, setReloadKey] = useState(0);
 
-  const heatmap = useMemo(() => {
-    const grid = buildHeatmapGrid(today, HEATMAP_DAYS);
-    return {
-      ...grid,
-      totalWorkouts: countWorkouts(attendanceByDate, grid.rangeStart, grid.rangeEnd),
+  useEffect(() => {
+    let active = true;
+
+    const load = async () => {
+      try {
+        const body = await fetchMyAttendance();
+        if (!active) return;
+        setRawRecords(body?.data?.record ?? []);
+        setStatus("ready");
+      } catch (err) {
+        if (!active) return;
+        setError(getApiErrorMessage(err));
+        setStatus("error");
+      }
     };
-  }, [today]);
 
-  const statistics = useMemo(
-    () => computeStatistics(attendanceByDate, today),
-    [today],
-  );
+    load();
 
-  const week = useMemo(
-    () => buildWeeklySummary(attendanceByDate, today),
-    [today],
-  );
+    return () => {
+      active = false;
+    };
+  }, [reloadKey]);
 
-  const recentVisits = useMemo(
-    () => getRecentVisits(attendanceRecords, today, 5),
-    [today],
-  );
+  const refetch = useCallback(async () => {
+    setStatus("loading");
+    setError(null);
+    setReloadKey((key) => key + 1);
+  }, []);
 
-  return { today, records: attendanceByDate, heatmap, statistics, week, recentVisits };
+  const model = useMemo(() => buildAttendanceModel(rawRecords), [rawRecords]);
+
+  const todayKey = toISODate(model.today);
+  const hasCheckedInToday = Boolean(model.records.get(todayKey)?.attended);
+
+  return {
+    ...model,
+    status,
+    loading: status === "loading",
+    error,
+    refetch,
+    rawRecords,
+    hasCheckedInToday,
+  };
 };
 
 export default useAttendance;

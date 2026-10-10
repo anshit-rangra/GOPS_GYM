@@ -9,22 +9,21 @@ const RegisterForm = () => {
 
   const {
     onSubmit,
-    register, handleSubmit,  errors, isSubmitting,
+    register, handleSubmit, errors, loading,
+    phoneValidation, photoValidation,
     profilePicPreview,
-     
   } = useRegistration()
-
 
   return (
     <Card 
-      variant="default" 
+      variant="panel" 
       padding="large" 
-      className="w-full max-w-md mx-auto backdrop-blur-sm"
+      className="w-full max-w-md mx-auto"
     >
       <div className="mb-6 flex flex-col items-center">
         <label
           htmlFor="profilePic"
-          className="relative flex h-28 w-28 cursor-pointer items-center justify-center overflow-hidden rounded-full border-2 border-dashed border-primary text-center text-sm text-text-secondary"
+          className="relative flex h-28 w-28 cursor-pointer items-center justify-center overflow-hidden rounded-full border-2 border-dashed border-volt/50 text-center text-sm text-muted transition-colors hover:border-volt"
         >
           {profilePicPreview ? (
             <img
@@ -40,12 +39,17 @@ const RegisterForm = () => {
             type="file"
             accept="image/*"
             className="sr-only"
-            {...register('profilePic')}
+            {...register('profilePic', photoValidation)}
           />
         </label>
-        <span className="mt-2 text-sm text-text-secondary">
-          Profile Photo
+        <span className="mt-2 text-sm text-muted">
+          Profile Photo <span className="text-error">*</span>
         </span>
+        {errors.profilePic && (
+          <span className="mt-1 text-xs text-error">
+            {errors.profilePic.message}
+          </span>
+        )}
       </div>
 
       <AuthFormHeader 
@@ -59,7 +63,11 @@ const RegisterForm = () => {
           type="text"
           id="name"
           name="name"
-          {...register('name', { required: 'Name is required' })}
+          {...register('name', {
+            required: 'Name is required',
+            minLength: { value: 2, message: 'Name must be at least 2 characters' },
+            maxLength: { value: 30, message: 'Name must be at most 30 characters' },
+          })}
           placeholder="Enter your full name"
           error={errors.name?.message}
           required
@@ -70,13 +78,8 @@ const RegisterForm = () => {
           type="tel"
           id="phoneNumber"
           name="phoneNumber"
-          {...register('phoneNumber', {
-            required: 'Phone number is required',
-            validate: value =>
-              /^[0-9]{10}$/.test(value.replace(/\s+/g, '')) ||
-              'Please enter a valid 10-digit phone number'
-          })}
-          placeholder="Enter your phone number"
+          {...register('phoneNumber', phoneValidation)}
+          placeholder="Enter your 10-digit phone number"
           error={errors.phoneNumber?.message}
           required
         />
@@ -89,8 +92,8 @@ const RegisterForm = () => {
           {...register('age', {
             required: 'Age is required',
             valueAsNumber: true,
-            validate: value =>
-              (value >= 10 && value <= 100) || 'Age must be between 10 and 100'
+            min: { value: 1, message: 'Age must be at least 1' },
+            max: { value: 100, message: 'Age must be at most 100' },
           })}
           placeholder="Enter your age"
           error={errors.age?.message}
@@ -106,29 +109,29 @@ const RegisterForm = () => {
             required: 'Password is required',
             minLength: { value: 6, message: 'Password must be at least 6 characters' }
           })}
-          placeholder="Enter your password"
+          placeholder="Create a password"
           error={errors.password?.message}
           required
         />
         
         <Button
           type="submit"
-          variant="primary"
+          variant="accent"
           size="large"
           fullWidth
-          loading={isSubmitting}
-          disabled={isSubmitting}
-          className="mt-6 hover:shadow-lg transform transition-all duration-200"
+          loading={loading}
+          disabled={loading}
+          className="mt-6"
         >
-          {isSubmitting ? 'Creating Account...' : 'Create Account'}
+          {loading ? 'Creating Account...' : 'Create Account'}
         </Button>
         
         <div className="text-center pt-2">
-          <p className="text-text-secondary text-sm">
+          <p className="text-muted text-sm">
             Already have an account?{' '}
             <Link 
               to="/auth/login" 
-              className="text-primary font-medium hover:text-primary-dark transition-colors duration-200"
+              className="text-volt font-medium hover:text-volt-strong transition-colors duration-200"
             >
               Sign in
             </Link>

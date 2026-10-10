@@ -1,32 +1,32 @@
 import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import { useDispatch, useSelector } from "react-redux";
-import { registerThunk } from '../state/authThunk'
+import { useNavigate } from "react-router";
+import { registerThunk } from "../state/authThunk";
 
+const PHONE_REGEX = /^[6-9]\d{9}$/;
 
 export const useRegistration = () => {
-  
-    const dispatch = useDispatch()
-    const loadingState = useSelector((state) => state.auth.loading)
-
+  const dispatch = useDispatch();
+  const navigate = useNavigate();
+  const loading = useSelector((state) => state.auth.loading);
 
   const {
-    control,
     register,
     handleSubmit,
     watch,
-    formState: { errors, isSubmitting }
+    formState: { errors },
   } = useForm({
     defaultValues: {
-      name: '',
-      phoneNumber: '',
-      age: '',
-      password: '',
-      profilePic: null
-    }
+      name: "",
+      phoneNumber: "",
+      age: "",
+      password: "",
+      profilePic: null,
+    },
   });
 
-  const profilePic = watch('profilePic');
+  const profilePic = watch("profilePic");
   const [profilePicPreview, setProfilePicPreview] = useState(null);
 
   useEffect(() => {
@@ -44,34 +44,45 @@ export const useRegistration = () => {
   }, [profilePic]);
 
   const onSubmit = async (submitData) => {
+    const formData = new FormData();
+    formData.append("name", submitData.name);
+    formData.append("age", submitData.age);
+    formData.append("phoneNumber", submitData.phoneNumber);
+    formData.append("password", submitData.password);
+
+    const photo = submitData.profilePic?.[0];
+    if (photo) formData.append("profilePic", photo);
+
     try {
-
-      const formData = new FormData()
-
-      Object.entries(submitData).forEach(([key, value]) => {
-        
-        if(key === "profilePic") {
-          formData.append(key, value[0])
-        }else {
-        formData.append(key, value)
-        }
-      })
-
-      
-      dispatch(registerThunk(formData))
-
-    } catch (error) {
-      console.error('Registration error:', error);
+      await dispatch(registerThunk(formData));
+      navigate("/auth/login", { replace: true });
+    } catch {
+      /* error toast handled in the thunk */
     }
   };
-    
+
+  const phoneValidation = {
+    required: "Phone number is required",
+    pattern: {
+      value: PHONE_REGEX,
+      message: "Enter a valid 10-digit Indian mobile number",
+    },
+  };
+
+  const photoValidation = {
+    validate: (value) =>
+      Boolean(value?.[0]) || "A profile photo is required to register",
+  };
+
   return {
     onSubmit,
-    loadingState,
-    control, register, handleSubmit, watch, errors, isSubmitting,
+    loading,
+    register,
+    handleSubmit,
+    watch,
+    errors,
+    phoneValidation,
+    photoValidation,
     profilePicPreview,
-
-  }
-
-}
-
+  };
+};

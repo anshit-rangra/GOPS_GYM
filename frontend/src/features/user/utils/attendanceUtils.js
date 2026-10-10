@@ -235,3 +235,73 @@ export const getRecentVisits = (records, today, limit = 5) =>
     .filter((record) => record.attended && fromISODate(record.date).getTime() <= today.getTime())
     .sort((a, b) => (a.date < b.date ? 1 : -1))
     .slice(0, limit);
+
+/**
+ * The backend stores one attendance document per check-in with a `createdAt`
+ * timestamp. Multiple documents on the same local calendar day represent
+ * multiple sessions that day, so we collapse them into a single per-day record.
+ */
+export const groupAttendanceRecords = (rawRecords = []) => {
+  const byDate = new Map();
+  if (!Array.isArray(rawRecords)) return byDate;
+
+  for (const raw of rawRecords) {
+    const created = new Date(raw?.createdAt);
+    if (Number.isNaN(created.getTime())) continue;
+
+    const key = toISODate(created);
+    const existing = byDate.get(key);
+
+    if (!existing) {
+      byDate.set(key, {
+        date: key,
+        attended: true,
+        sessions: 1,
+        checkInAt: created,
+        checkInTime: formatClock(created),
+        recordIds: raw?._id ? [raw._id] : [],
+      });
+      continue;
+    }
+
+    existing.sessions += 1;
+    if (raw?._id) existing.recordIds.push(raw._id);
+    if (created.getTime() < existing.checkInAt.getTime()) {
+      existing.checkInAt = created;
+      existing.checkInTime = formatClock(created);
+    }
+  }
+
+  return byDate;
+};
+
+export const buildAttendanceModel = (rawRecords, { heatmapDays = 60 } = {}) => {
+  const today = startOfDay(new Date());
+  const records = groupAttendanceRecords(rawRecords);
+
+  const heatmap = { ...buildHeatmapGrid(today, heatmapDays) };
+  heatmap.totalWorkouts = countWorkouts(
+    records,
+    heatmap.rangeStart,
+    heatmap.rangeEnd,
+  );
+
+  const statistics = computeStatistics(records, today);
+  const week = buildWeeklySummary(records, today);
+
+  const allVisits = Array.from(records.values()).sort((a, b) =>
+    a.date < b.date ? 1 : -1,
+  );
+  const recentVisits = allVisits.slice(0, 5);
+
+  return {
+    today,
+    records,
+    heatmap,
+    statistics,
+    week,
+    allVisits,
+    recentVisits,
+    totalSessions: Array.isArray(rawRecords) ? rawRecords.length : 0,
+  };
+};
